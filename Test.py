@@ -1,20 +1,22 @@
-from Compile import Compile
+from compile import Compile
 
 code = """
-sta  ,  ORG\t100
-q, LDA A /dsf*
-ADD   b
-STA\tc \t\t/ hello oo
- ** STA\tc +\t\t  /sdf
-STA\tc/sdf
-  hlt
-org 700
-a  ,  deC 11
-b* *, dec# 200
-c , hex ff
-  end 
+ORG 100
+LDA A
+ADD B
+STA C
+HLT
+
+ORG 400
+A, DEC 5
+B, HEX F
+C, DEC 0
+END
 """
 
 
-preprocessing = Compile(code)
-print(preprocessing.serialize())
+a = Compile()
+
+is_ok, commands = a.start(code)
+print(is_ok)
+print(commands)

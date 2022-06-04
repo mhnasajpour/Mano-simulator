@@ -7,12 +7,14 @@ database = {'AND': '0', 'ADD': '1', 'LDA': '2', 'STA': '3', 'BUN': '4', 'BSA': '
 
 
 class Compile:
-    def __init__(self, code):
-        self.code = code
+    def start(self, code):
+        self.code = ''
         self.address_table = dict()
-
-    def add_address_table(self, id, label):
-        self.address_table[label] = id
+        commands, error = self.serialize(code)
+        if error:
+            return (False, error)
+        fixed_commands = self.mapping_address(commands)
+        return (False if fixed_commands[1] == 'Invalid address' else True, fixed_commands)
 
     def process_line(self, line, id):
         label = ''
@@ -49,7 +51,12 @@ class Compile:
             return [id, 'error', 'Wrong instruction']
         if inst == 'X':
             try:
-                return [id, 'pseudu', label, name, int(line, 10 if name in ['ORG', 'DEC'] else 16)]
+                line = line[-3:]
+                if name == 'ORG':
+                    return [id, 'pseudu', label, name, int(line)]
+                if name == 'DEC':
+                    return [id, 'pseudu', label, name, str(hex(int(line))[2:].zfill(3)).upper()]
+                return [id, 'pseudu', label, name, str(hex(int(line, 16))[2:].zfill(3)).upper()]
             except:
                 return [id, 'error', 'Wrong number']
         if(inst[0] in ['7', 'F']):
@@ -63,8 +70,8 @@ class Compile:
             return [id, 'error', 'Wrong instruction']
         return [id, 'memory', label, database.get(name+'I') if indirect else database.get(name), line]
 
-    def serialize(self):
-        code = self.code.upper().splitlines(keepends=False)
+    def serialize(self, code):
+        code = code.upper().splitlines(keepends=False)
         id = 0
         error = []
         commands = []
@@ -78,9 +85,20 @@ class Compile:
                 id = int(result[4]) - 1
             elif result[2]:
                 commands.append(result)
-                self.add_address_table(id, result[2])
+                self.address_table[result[2]] = id
             else:
                 commands.append(result)
 
             id += 1
+        return commands, error
+
+    def mapping_address(self, commands):
+        for i in range(len(commands)):
+            if commands[i][1] == 'memory':
+                addr = self.address_table.get(commands[i][4], '')
+                if addr:
+                    commands[i][3] += str(hex(addr))[2:].zfill(3).upper()
+                else:
+                    return [commands[i][0], 'Invalid address']
+
         return commands
