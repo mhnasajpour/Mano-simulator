@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/images">
         <file>images/back1.png</file>
-        <file>images/back2.png</file>
         <file>images/code.png</file>
         <file>images/copmuter.png</file>
         <file>images/frame.png</file>

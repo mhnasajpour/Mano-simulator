@@ -97,7 +97,7 @@ class Compile:
         for i in range(len(commands)):
             if commands[i][1] == 'memory':
                 addr = self.address_table.get(commands[i][4], '')
-                if addr:
+                if addr != '':
                     commands[i][3] += str(hex(addr))[2:].zfill(3).upper()
                     commands[i].pop()
                 else:

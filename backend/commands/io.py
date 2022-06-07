@@ -9,9 +9,12 @@ def finish_exec(values, message):
 
 
 def INP(values):
-    values['AC'][2:] = values['INPR']
-    values['INPR'] = str(hex(ord(values['INPUT'][0])))[2:].upper().zfill(4)
-    values['INPUT'].pop(0)
+    values['AC'] = '00' + values['INPR']
+    if values['INPUT']:
+        values['INPUT'] = values['INPUT'][1:]
+        values['INPR'] = str(hex(ord(values['INPUT'][0])))[2:].upper().zfill(4)
+    else:
+        values['INPR'] = '00'
     values['FGI'] = False
     return finish_exec(values, 'AC(0-7)<-INPR, FGI<-0')
 
@@ -47,7 +50,7 @@ def IOF(values):
 def interrupt_cycle(values, memory):
     if values['SC'] == '0':
         values['AR'] = '000'
-        values['TR'][1:] = values['PC']
+        values['TR'] = '0' + values['PC']
         return '[EXECUTE] AR<-0, TR<-PC'
     elif values['SC'] == '1':
         memory[int(values['AR'], 16)][1] = values['TR']

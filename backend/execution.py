@@ -31,11 +31,16 @@ class Execution:
 
     def set_input(self, value):
         self.values['INPUT'] = value
-        if value:
-            self.values['FGI'] = True
+        if self.values['INPR'] == '00':
+            self.values['INPR'] = (str(hex(ord(value[0]))))[
+                2:].upper().zfill(2)
+            self.values['INPUT'] = self.values['INPUT'][1:]
 
     def next_step(self):
         message = ''
+        self.values['FGO'] = True
+        if self.values['INPR'] != '00':
+            self.values['FGI'] = True
         if self.values['S']:
             SC = int(self.values['SC'], 16)
             if not self.values['R']:
@@ -49,7 +54,6 @@ class Execution:
                     message = self.execute()
                     if self.values['IEN'] and (self.values['FGI'] or self.values['FGO']):
                         self.values['R'] = True
-
             else:
                 io.interrupt_cycle(self.values, self.memory)
 

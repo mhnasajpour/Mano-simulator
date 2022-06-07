@@ -1,14 +1,14 @@
 from backend.interface import Interface
-from PyQt5.QtWidgets import QApplication, QWidget, QTableWidgetItem, QFileDialog
+from PyQt5.QtWidgets import QTableWidgetItem, QFileDialog
 from PyQt5.QtGui import QPixmap
-from info import Ui_information_window
+import images
 
 
 interface = Interface()
 file_path = ''
 
 
-def set_values(SC, PC, AR, IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO):
+def set_values(SC, PC, AR, IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO, INPUT):
     try:
         result = interface.get_values()
         SC.setText(result['SC'])
@@ -21,6 +21,7 @@ def set_values(SC, PC, AR, IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FG
         INPR.setText(result['INPR'])
         OUTR.setText(result['OUTR'])
         INST.setText(result['INST'])
+        INPUT.setText(result['INPUT'])
 
         green = QPixmap(":/images/images/green.png")
         red = QPixmap(":/images/images/red.png")
@@ -60,12 +61,17 @@ def text_changed(inp):
     interface.update_input(inp.text())
 
 
+def beautify_code(code):
+    text = interface.save(code.toPlainText())
+    code.setPlainText(text)
+
+
 def save_code(code):
     value = code.toPlainText()
     code.setPlainText(interface.save(value))
 
 
-def compile_code(console, code, microoperation, memory, SC, PC, AR, IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO):
+def compile_code(console, code, microoperation, memory, SC, PC, AR, IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO, INPUT):
     try:
         result = interface.compile(code.toPlainText())
         console.setPlainText(result[1])
@@ -83,10 +89,10 @@ def compile_code(console, code, microoperation, memory, SC, PC, AR, IR, DR, AC, 
         pass
     set_memory(memory)
     set_values(SC, PC, AR, IR, DR, AC, TR, INPR,
-               OUTR, INST, I, S, E, R, IEN, FGI, FGO)
+               OUTR, INST, I, S, E, R, IEN, FGI, FGO, INPUT)
 
 
-def next_step(console, code, microoperation, memory, SC, PC, AR, IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO):
+def next_step(console, code, microoperation, memory, SC, PC, AR, IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO, INPUT):
     message = interface.next_step(code.toPlainText())
     if message == None:
         console.setPlainText(
@@ -97,10 +103,10 @@ def next_step(console, code, microoperation, memory, SC, PC, AR, IR, DR, AC, TR,
         microoperation.setText(message)
     set_memory(memory)
     set_values(SC, PC, AR, IR, DR, AC, TR, INPR,
-               OUTR, INST, I, S, E, R, IEN, FGI, FGO)
+               OUTR, INST, I, S, E, R, IEN, FGI, FGO, INPUT)
 
 
-def run(console, code, microoperation, memory, SC, PC, AR, IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO):
+def run(console, code, microoperation, memory, SC, PC, AR, IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO, INPUT):
     message = interface.run(code.toPlainText())
     if message == False:
         console.setPlainText(
@@ -111,12 +117,12 @@ def run(console, code, microoperation, memory, SC, PC, AR, IR, DR, AC, TR, INPR,
         microoperation.setText('[FINISHED PROGRAM]')
     set_memory(memory)
     set_values(SC, PC, AR, IR, DR, AC, TR, INPR,
-               OUTR, INST, I, S, E, R, IEN, FGI, FGO)
+               OUTR, INST, I, S, E, R, IEN, FGI, FGO, INPUT)
 
 
-def reset(console, code, microoperation, memory, SC, PC, AR, IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO):
+def reset(console, code, microoperation, memory, SC, PC, AR, IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO, INPUT):
     compile_code(console, code, microoperation, memory, SC, PC, AR,
-                 IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO)
+                 IR, DR, AC, TR, INPR, OUTR, INST, I, S, E, R, IEN, FGI, FGO, INPUT)
     console.setPlainText('Reset execution')
     microoperation.setText('')
 
@@ -140,12 +146,3 @@ def open_code(code):
         text = file.read()
         code.setPlainText(text)
         file.close()
-
-
-def info():
-    import sys
-    app = QApplication(sys.argv)
-    information_window = QWidget()
-    ui = Ui_information_window()
-    ui.setupUi(information_window)
-    information_window.show()

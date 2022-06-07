@@ -13,12 +13,6 @@ from PyQt5.QtWidgets import QTableWidgetItem
 import signals
 import sys
 import images
-import os
-from pathlib import Path
-import sys
-from PySide2.QtWidgets import QApplication, QWidget
-from PySide2.QtCore import QFile
-from PySide2.QtUiTools import QUiLoader
 
 
 class Ui_main_window(object):
@@ -659,6 +653,8 @@ class Ui_main_window(object):
             self.memory_table.setItem(i, 1, item)
         signals.set_memory(self.memory_table)
 
+        self.dialog = Info()
+
         self.retranslateUi(main_window)
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
@@ -710,9 +706,9 @@ class Ui_main_window(object):
     def operations(self):
         arguments = [self.console, self.coding_text, self.microoperation, self.memory_table, self.SC_value_label, self.PC_value_label, self.AR_value_label,
                      self.IR_value_label, self.DR_value_label, self.AC_value_label, self.TR_value_label, self.INPR_value_label, self.OUTR_value_label,
-                     self.INST_value_label, self.I_value, self.S_value, self.E_value, self.R_value, self.IEN_value, self.FGI_value, self.FGO_value]
+                     self.INST_value_label, self.I_value, self.S_value, self.E_value, self.R_value, self.IEN_value, self.FGI_value, self.FGO_value, self.input]
         self.code_button.clicked.connect(
-            lambda: signals.save_code(self.coding_text))
+            lambda: signals.beautify_code(self.coding_text))
         self.compile_button.clicked.connect(
             lambda: signals.compile_code(*arguments))
         self.next_button.clicked.connect(
@@ -723,26 +719,129 @@ class Ui_main_window(object):
             lambda: signals.save_code(self.coding_text))
         self.open_button.clicked.connect(
             lambda: signals.open_code(self.coding_text))
-        self.goto_information.clicked.connect(lambda: self.info())
-        self.input.textChanged.connect(lambda: signals.text_changed(self.input))
+        self.goto_information.clicked.connect(
+            lambda: self.info())
+        self.input.textChanged.connect(
+            lambda: signals.text_changed(self.input))
 
     def info(self):
-        widget = Info()
-        widget.show()
+        self.dialog.show()
 
 
-class Info(QWidget):
-    def __init__(self):
-        super(Info, self).__init__()
-        self.load_ui()
+class Ui_information_window(object):
+    def setupUi(self, information_window):
+        information_window.setObjectName("information_window")
+        information_window.resize(1390, 800)
+        self.about_project_text = QtWidgets.QPlainTextEdit(information_window)
+        self.about_project_text.setGeometry(QtCore.QRect(310, 290, 781, 91))
+        self.about_project_text.setStyleSheet("background: #0000ffff;\n"
+                                              "color: #afc5d0;\n"
+                                              "font: 75 10.5pt \"MS Shell Dlg 2\";\n"
+                                              "")
+        self.about_project_text.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.about_project_text.setReadOnly(True)
+        self.about_project_text.setObjectName("about_project_text")
+        self.computer_label = QtWidgets.QLabel(information_window)
+        self.computer_label.setGeometry(QtCore.QRect(260, 230, 61, 51))
+        self.computer_label.setStyleSheet("background: #0000ffff;\n"
+                                          "background-image: url(:/images/images/copmuter.png);\n"
+                                          "background-repeat: no-repeat;")
+        self.computer_label.setText("")
+        self.computer_label.setObjectName("computer_label")
+        self.team_label = QtWidgets.QLabel(information_window)
+        self.team_label.setGeometry(QtCore.QRect(270, 420, 61, 51))
+        self.team_label.setStyleSheet("background: #0000ffff;\n"
+                                      "background-repeat: no-repeat;\n"
+                                      "background-image: url(:/images/images/team.png);")
+        self.team_label.setText("")
+        self.team_label.setObjectName("team_label")
+        self.github_icon_1 = QtWidgets.QLabel(information_window)
+        self.github_icon_1.setGeometry(QtCore.QRect(310, 490, 41, 41))
+        self.github_icon_1.setStyleSheet("background: #0000ffff;\n"
+                                         "background-repeat: no-repeat;\n"
+                                         "background-image: url(:/images/images/github.png);")
+        self.github_icon_1.setText("")
+        self.github_icon_1.setObjectName("github_icon_1")
+        self.github_icon_2 = QtWidgets.QLabel(information_window)
+        self.github_icon_2.setGeometry(QtCore.QRect(610, 490, 41, 41))
+        self.github_icon_2.setStyleSheet("background: #0000ffff;\n"
+                                         "background-image: url(:/images/images/github.png);\n"
+                                         "background-repeat: no-repeat;")
+        self.github_icon_2.setText("")
+        self.github_icon_2.setObjectName("github_icon_2")
+        self.github_icon_3 = QtWidgets.QLabel(information_window)
+        self.github_icon_3.setGeometry(QtCore.QRect(860, 490, 41, 41))
+        self.github_icon_3.setStyleSheet("background: #0000ffff;\n"
+                                         "background-repeat: no-repeat;\n"
+                                         "background-image: url(:/images/images/github.png);")
+        self.github_icon_3.setText("")
+        self.github_icon_3.setObjectName("github_icon_3")
+        self.name_2 = QtWidgets.QPlainTextEdit(information_window)
+        self.name_2.setGeometry(QtCore.QRect(650, 490, 181, 71))
+        self.name_2.setStyleSheet("background: #0000ffff;\n"
+                                  "color: #afc5d0;\n"
+                                  "font: 75 9.5pt \"MS Shell Dlg 2\";\n"
+                                  "")
+        self.name_2.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.name_2.setReadOnly(True)
+        self.name_2.setObjectName("name_2")
+        self.name_1 = QtWidgets.QPlainTextEdit(information_window)
+        self.name_1.setGeometry(QtCore.QRect(350, 490, 171, 81))
+        self.name_1.setStyleSheet("background: #0000ffff;\n"
+                                  "color: #afc5d0;\n"
+                                  "font: 75 9.5pt \"MS Shell Dlg 2\";\n"
+                                  "")
+        self.name_1.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.name_1.setReadOnly(True)
+        self.name_1.setObjectName("name_1")
+        self.name_3 = QtWidgets.QPlainTextEdit(information_window)
+        self.name_3.setGeometry(QtCore.QRect(900, 490, 211, 71))
+        self.name_3.setStyleSheet("background: #0000ffff;\n"
+                                  "color: #afc5d0;\n"
+                                  "font: 75 9.5pt \"MS Shell Dlg 2\";\n"
+                                  "")
+        self.name_3.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.name_3.setReadOnly(True)
+        self.name_3.setObjectName("name_3")
+        self.pic = QtWidgets.QLabel(information_window)
+        self.pic.setGeometry(QtCore.QRect(0, 0, 1390, 800))
+        self.pic.setText("")
+        self.pic.setPixmap(QtGui.QPixmap(":/images/images/back1.png"))
+        self.pic.setScaledContents(True)
+        self.pic.setObjectName("pic")
+        self.pic.raise_()
+        self.about_project_text.raise_()
+        self.computer_label.raise_()
+        self.team_label.raise_()
+        self.github_icon_1.raise_()
+        self.github_icon_2.raise_()
+        self.github_icon_3.raise_()
+        self.name_2.raise_()
+        self.name_1.raise_()
+        self.name_3.raise_()
 
-    def load_ui(self):
-        loader = QUiLoader()
-        path = os.fspath(Path(__file__).resolve().parent /
-                         "information_window.ui")
-        ui_file = QFile(path)
-        ui_file.open(QFile.ReadOnly)
-        loader.load(ui_file, self)
+        self.retranslateUi(information_window)
+        QtCore.QMetaObject.connectSlotsByName(information_window)
+
+    def retranslateUi(self, information_window):
+        _translate = QtCore.QCoreApplication.translate
+        information_window.setWindowTitle(
+            _translate("information_window", "Information"))
+        self.about_project_text.setPlainText(_translate(
+            "information_window", "This is a Qt & Python application that compiles assembly code and runs a simulation of Mano\'s Computer as detailed in: Computer System Architecture, 3rd edition by M. Morris Mano Published by Prentice-Hall, c 1993 Chapter 5, pp 123-172."))
+        self.name_2.setPlainText(_translate("information_window", "Melika Fotoohi\n"
+                                            "MelikaFotoohi"))
+        self.name_1.setPlainText(_translate("information_window", "Mohammad Nasajpour\n"
+                                            "mhnasajpour"))
+        self.name_3.setPlainText(_translate("information_window", "Fatemeh Ghadamzadeh\n"
+                                            "ftmh.ghz"))
+
+
+class Info(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        super(Info, self).__init__(parent)
+        self.ui = Ui_information_window()
+        self.ui.setupUi(self)
 
 
 if __name__ == "__main__":

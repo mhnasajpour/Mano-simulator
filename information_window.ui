@@ -13,15 +13,12 @@
   <property name="windowTitle">
    <string>Information</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background-image: url(:/images/images/back1.png);</string>
-  </property>
   <widget class="QPlainTextEdit" name="about_project_text">
    <property name="geometry">
     <rect>
      <x>310</x>
      <y>290</y>
-     <width>821</width>
+     <width>781</width>
      <height>91</height>
     </rect>
    </property>
@@ -38,7 +35,7 @@ font: 75 10.5pt &quot;MS Shell Dlg 2&quot;;
     <bool>true</bool>
    </property>
    <property name="plainText">
-    <string>This is a Qt &amp; Python application that compiles assembly code for and runs a simulation of Mano's Computer as detailed in: Computer System Architecture, 3rd edition by M. Morris Mano Published by Prentice-Hall, c 1993 Chapter 5, pp 123-172.</string>
+    <string>This is a Qt &amp; Python application that compiles assembly code and runs a simulation of Mano's Computer as detailed in: Computer System Architecture, 3rd edition by M. Morris Mano Published by Prentice-Hall, c 1993 Chapter 5, pp 123-172.</string>
    </property>
   </widget>
   <widget class="QLabel" name="computer_label">
@@ -209,7 +206,38 @@ font: 75 9.5pt &quot;MS Shell Dlg 2&quot;;
 ftmh.ghz</string>
    </property>
   </widget>
+  <widget class="QLabel" name="pic">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1390</width>
+     <height>800</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="images.qrc">:/images/images/back1.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <zorder>pic</zorder>
+  <zorder>about_project_text</zorder>
+  <zorder>computer_label</zorder>
+  <zorder>team_label</zorder>
+  <zorder>github_icon_1</zorder>
+  <zorder>github_icon_2</zorder>
+  <zorder>github_icon_3</zorder>
+  <zorder>name_2</zorder>
+  <zorder>name_1</zorder>
+  <zorder>name_3</zorder>
  </widget>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>
