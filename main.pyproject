@@ -1,0 +1,3 @@
+{
+    "files": ["main.py","form.ui","images.qrc", "information_window.ui"]
+}
