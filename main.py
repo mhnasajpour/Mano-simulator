@@ -20,6 +20,7 @@ class Ui_main_window(object):
         main_window.setObjectName("main_window")
         main_window.setEnabled(True)
         main_window.resize(1390, 800)
+        main_window.setFixedSize(1390, 800)
         main_window.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         main_window.setStyleSheet(
             "background-image: url(:/images/images/back1.png);")
@@ -732,6 +733,7 @@ class Ui_information_window(object):
     def setupUi(self, information_window):
         information_window.setObjectName("information_window")
         information_window.resize(1390, 800)
+        information_window.setFixedSize(1390, 800)
         self.about_project_text = QtWidgets.QPlainTextEdit(information_window)
         self.about_project_text.setGeometry(QtCore.QRect(310, 290, 781, 91))
         self.about_project_text.setStyleSheet("background: #0000ffff;\n"
@@ -852,3 +854,4 @@ if __name__ == "__main__":
     ui.operations()
     main_window.show()
     sys.exit(app.exec_())
+    
